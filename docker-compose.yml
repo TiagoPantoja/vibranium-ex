@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: vibranium_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vibranium_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: vibranium_mq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  app:
+    build: .
+    container_name: vibranium_app
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      - DATABASE_URL=ecto://postgres:password@db/vibranium_dev
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - PHX_HOST=localhost
+      - SECRET_KEY_BASE=sua_chave_secreta_aqui_gerada_pelo_mix_phx_gen_secret
+    ports:
+      - "4000:4000"
+
+volumes:
+  postgres_data:
