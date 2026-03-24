@@ -39,10 +39,12 @@ docker compose exec app mix ecto.setup
 ```
 
 3. **Access the RabbitMQ Dashboard:**
+
 Open `http://localhost:15672` (User/Pass: `guest`) to monitor the `vibranium_trades_queue`.
 
 ## Testing the Endpoints
 1. **Create a Buy Order**
+
 This endpoint is asynchronous. It will return `202 Accepted` as soon as the order is succesfully posted to RabbitMQ.
 
 * **URL:** `POST http://localhost:4000/api/trades`
